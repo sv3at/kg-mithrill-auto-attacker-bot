@@ -7,13 +7,13 @@ import time
 import csv
 import os
 from datetime import datetime
+import argparse
 
 # Set PyAutoGUI safety features
 pyautogui.PAUSE = 0.02  # Further reduced pause for speed
 pyautogui.FAILSAFE = True  # Move mouse to corner to abort
 
-global username
-global power
+#python attack.py --username John --power 484Fire --searches 20 --delay 3
 
 # Statistics tracking
 stats = {
@@ -524,152 +524,6 @@ def print_statistics(username, power):
     print(f"Troops Returned:     {stats['troops_returned']}")
     print("="*70)
 
-# def hit_mines(username=None, power=None, max_searches=30):
-#     failed_mines = set()
-#     while stats['searches_performed'] < max_searches or max_searches==0:
-#         # Detect current mine status
-#         results = detect_mines()
-        
-#         if results is None:
-#             print("✗ ERROR: Could not detect mines!")
-#             break
-        
-#         red_mines = results['red_mines']
-#         green_mines = results['green_mines']
-        
-#         print(f"\n[{len(red_mines)} RED, {len(green_mines)} GREEN, Search {stats['searches_performed']}/{max_searches}]")
-        
-#         # Filter out failed mines
-#         attackable_mines = [m for m in red_mines if m['position_name'] not in failed_mines]
-        
-#         if not attackable_mines:
-#             # Search for new mines if we have searches remaining
-#             if stats['searches_performed'] < max_searches:
-#                 print(f"\n→ Searching for new mines...")
-                
-#                 # First, return all troops from green mines
-#                 if green_mines:
-#                     for green_mine in green_mines:
-#                         return_troops_from_mine(green_mine['position'], green_mine['position_name'])
-#                         time.sleep(0.2)
-                
-#                 # Now search for new mines
-#                 search_success = search_for_new_mines()
-#                 stats['searches_performed'] += 1  # Increment here
-                
-#                 if search_success:
-#                     # Clear failed mines list for new set
-#                     failed_mines.clear()
-#                     print("✓ New mines found!\n")
-#                     continue
-#                 else:
-#                     print("✗ No new mines found. Stopping.\n")
-#                     break
-#             else:
-#                 print(f"\n✗ Reached maximum searches ({max_searches}). Stopping.\n")
-#                 break
-        
-#         # Attack the first available red mine
-#         target_mine = attackable_mines[0]
-#         success = attack_mine(target_mine['position'], target_mine['position_name'])
-        
-#         if success:
-#             # Check if there are still red mines remaining
-#             time.sleep(0.2)
-#             results = detect_mines()
-#             if results and len(results['red_mines']) > 0:
-#                 # Return troops from all green mines
-#                 for green_mine in results['green_mines']:
-#                     return_troops_from_mine(green_mine['position'], green_mine['position_name'])
-#                     time.sleep(0.2)
-#         else:
-#             # Mark this mine as failed
-#             failed_mines.add(target_mine['position_name'])
-        
-#         # Small delay before next iteration
-#         time.sleep(0.2)
-
-
-
-
-
-
-# def hit_mines(username=None, power=None, max_searches=30):
-#     failed_mines = set()
-#     while stats['searches_performed'] < max_searches or max_searches==0:
-#         # Detect current mine status
-#         results = detect_mines()
-        
-#         if results is None:
-#             print("✗ ERROR: Could not detect mines!")
-#             break
-        
-#         red_mines = results['red_mines']
-#         green_mines = results['green_mines']
-        
-#         print(f"\n[{len(red_mines)} RED, {len(green_mines)} GREEN, Search {stats['searches_performed']}/{max_searches}]")
-        
-#         # Filter out failed mines
-#         attackable_mines = [m for m in red_mines if m['position_name'] not in failed_mines]
-        
-#         if not attackable_mines:
-#             # No more attackable mines in current batch
-#             if len(red_mines) == 0:
-#                 # All mines cleared successfully
-#                 print("\n✓ All current red mines cleared!")
-#             else:
-#                 # Some mines remain but all have failed
-#                 print(f"\n✗ All remaining {len(red_mines)} red mines have failed.")
-            
-#             # Search for new mines if we have searches remaining
-#             if stats['searches_performed'] < max_searches:
-#                 print(f"→ Searching for new mines...")
-                
-#                 # First, return all troops from green mines
-#                 if green_mines:
-#                     for green_mine in green_mines:
-#                         return_troops_from_mine(green_mine['position'], green_mine['position_name'])
-#                         time.sleep(0.2)
-                
-#                 # Now search for new mines
-#                 search_success = search_for_new_mines()
-#                 stats['searches_performed'] += 1  # Increment here
-                
-#                 if search_success:
-#                     # Clear failed mines list for new set
-#                     failed_mines.clear()
-#                     print("✓ New mines found!\n")
-#                     continue
-#                 else:
-#                     print("✗ No new mines found. Stopping.\n")
-#                     break
-#             else:
-#                 print(f"\n✗ Reached maximum searches ({max_searches}). Stopping.\n")
-#                 break
-        
-#         # Attack the first available red mine
-#         target_mine = attackable_mines[0]
-#         success = attack_mine(target_mine['position'], target_mine['position_name'])
-        
-#         if success:
-#             # Check if there are still red mines remaining
-#             time.sleep(0.2)
-#             results = detect_mines()
-#             if results and len(results['red_mines']) > 0:
-#                 # Return troops from all green mines
-#                 for green_mine in results['green_mines']:
-#                     return_troops_from_mine(green_mine['position'], green_mine['position_name'])
-#                     time.sleep(0.2)
-#         else:
-#             # Mark this mine as failed
-#             failed_mines.add(target_mine['position_name'])
-        
-#         # Small delay before next iteration
-#         time.sleep(0.2)
-
-
-
-
 def hit_mines(username=None, power=None, max_searches=30):
     failed_mines = set()
     
@@ -748,16 +602,14 @@ def hit_mines(username=None, power=None, max_searches=30):
         # Small delay before next iteration
         time.sleep(0.2)
 
-
-
-
-
 def attack_all_red_mines(username=None, power=None, max_searches=30):
     """
     Main function to attack all red mines and manage troops.
     """
     print("\n" + "="*70)
     print("STARTING AUTOMATED MINE ATTACK SEQUENCE")
+    print(f"Player: {username}")
+    print(f"Power: {power}")
     print(f"Maximum searches allowed: {max_searches}")
     print("="*70 + "\n")
     
@@ -768,35 +620,58 @@ def attack_all_red_mines(username=None, power=None, max_searches=30):
     print_statistics(username, power)
 
 def main():
-    print("Mine Detection & Attack System")
-    print("="*70)
-
-    global username
-    username = input("\nEnter player name: ").strip()
-    if not username:
-        username = "Unknown"
-
-    global power
-    power = input("\nEnter top troop power: ").strip()
-    if not power:
-        power = "Unknown"
-
+    parser = argparse.ArgumentParser(
+        description='Automated Mine Attack System for Whitehill',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+Examples:
+  python attack.py -u John -p 484Fire
+  python attack.py -u Jane -p 500Archer -s 50
+  python attack.py --username Bob --power 450Earth --searches 0
+        '''
+    )
     
-    # Get max searches
-    max_searches = input("Maximum number of searches (default 30): ").strip()
-    max_searches = int(max_searches) if max_searches else 30
+    parser.add_argument('-u', '--username', 
+                       type=str, 
+                       required=True,
+                       help='Player username')
+    
+    parser.add_argument('-p', '--power', 
+                       type=str, 
+                       required=True,
+                       help='Top troop power and type (e.g., 484Fire)')
+    
+    parser.add_argument('-s', '--searches', 
+                       type=int, 
+                       default=30,
+                       help='Maximum number of searches (default: 30, use 0 for unlimited)')
+    
+    parser.add_argument('-d', '--delay',
+                       type=int,
+                       default=2,
+                       help='Countdown delay in seconds before starting (default: 2)')
+    
+    args = parser.parse_args()
     
     # Record start time
     stats['start_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
-    print(f"\nStarting in 2 seconds... Make sure game window is visible!")
-    time.sleep(2)
+    print("="*70)
+    print("Mine Detection & Attack System")
+    print("="*70)
+    print(f"Player:   {args.username}")
+    print(f"Power:    {args.power}")
+    print(f"Searches: {args.searches if args.searches > 0 else 'Unlimited'}")
+    print(f"\nStarting in {args.delay} seconds... Make sure game window is visible!")
+    print("="*70)
+    
+    time.sleep(args.delay)
     
     # Run attack sequence
-    attack_all_red_mines(username, power, max_searches=max_searches)
+    attack_all_red_mines(args.username, args.power, max_searches=args.searches)
     
     # Save to CSV
-    save_statistics_to_csv(username, power)
+    save_statistics_to_csv(args.username, args.power)
 
 
 if __name__ == "__main__":
