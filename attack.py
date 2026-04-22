@@ -13,7 +13,7 @@ import argparse
 pyautogui.PAUSE = 0.02  # Further reduced pause for speed
 pyautogui.FAILSAFE = True  # Move mouse to corner to abort
 
-#python attack.py --username John --power 484Fire --searches 20 --delay 3
+#python attack.py --username John --power 484Fire --searches 20
 
 # Statistics tracking
 stats = {
